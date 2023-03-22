@@ -75,23 +75,38 @@ function solution(n, t, m, timetable) {
         minHeap.heappush(hour + min);
     }
 
-    let now = 540; // 09:00
-    for (let i = 0; i < n - 1; i += 1) {
-        for (let j = 0; j < m; j += 1) {
-            const crew = minHeap.heappop();
+    // if(n === 1){
+    //     const min = minHeap.getMin();
+    //     if (min >= 540) return "09:00";
+    // }
+    // if (setFlag) {
+    //     const min = minHeap.getMin();
+    //     return makeAnswerForm(min-1)
+    // }
+
+    let now = 540;
+    let crew;
+    while (n > 1) {
+        for (let i = 0; i < m; i += 1) {
+            // 학생이 수가 적은 경우
+            crew = minHeap.heappop();
             if (now < crew) {
                 minHeap.heappush(crew);
                 break;
             }
         }
-        now += t;
+        if (n > 1) now += t;
+        n -= 1;
     }
-
     const lastShuttle = [];
+
     for (let i = 0; i < m; i += 1) {
-        const crew = minHeap.heappop();
-        if (crew > now) break;
-        lastShuttle.push(crew);
+        const min = minHeap.heappop();
+        if (min <= now) {
+            lastShuttle.push(min);
+        } else {
+            break;
+        }
     }
     if (lastShuttle.length === m) {
         return makeAnswerForm(lastShuttle[m - 1] - 1);
